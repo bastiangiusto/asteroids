@@ -1,6 +1,7 @@
 import pygame
+import sys
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from logger import log_state
+from logger import log_state, log_event
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
@@ -31,7 +32,7 @@ def main():
     asteroids = pygame.sprite.Group()
 
     Asteroid.containers = (asteroids, updatable, drawable)
-    AsteroidField.containers = (updatable)
+    AsteroidField.containers = (updatable,)
 
     # Spawning a Asterofield object
     asterofield = AsteroidField()
@@ -48,13 +49,19 @@ def main():
         screen.fill("black")
         
         # Render the player on the screen before flipping the screen
-        for player in drawable:
-            player.draw(screen)
+        for drawable_obj in drawable:
+            drawable_obj.draw(screen)
 
 
         # Rotate player if key is pressed
         updatable.update(dt)
 
+        # Iterating over all asteroids objects to check for collision
+        for asteroid in asteroids:
+            if asteroid.collides_with(player):
+                log_event("player_hit")
+                print("Game over!")
+                sys.exit()
         
         # Updating the screen
         pygame.display.flip()
@@ -62,8 +69,6 @@ def main():
 
         # Updating dt
         dt = clock.tick(60) / 1000
-
-
 
 
 if __name__ == "__main__":
