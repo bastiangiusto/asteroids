@@ -2,6 +2,8 @@ import pygame
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from logger import log_state
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
@@ -24,6 +26,17 @@ def main():
     # Spawning a player object
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
+
+    # Creating pugame group for the asteroids
+    asteroids = pygame.sprite.Group()
+
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
+
+    # Spawning a Asterofield object
+    asterofield = AsteroidField()
+
+    
     # Starting the game loop
     while True:
         log_state()
@@ -37,6 +50,7 @@ def main():
         # Render the player on the screen before flipping the screen
         for player in drawable:
             player.draw(screen)
+
 
         # Rotate player if key is pressed
         updatable.update(dt)
